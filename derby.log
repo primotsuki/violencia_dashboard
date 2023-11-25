@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Fri Nov 24 21:53:34 BOT 2023:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-018c-042e-a2d5-000008fd7410 
+on database directory memory:C:\primo\violencia_dashboard\databaseName=metastore_db with class loader org.apache.spark.sql.hive.client.IsolatedClientLoader$$anon$1@e0e3b5c 
+Loaded from file:/C:/Users/primo/AppData/Local/spark/spark-3.0.3-bin-hadoop3.2/jars/derby-10.12.1.1.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_391-b13
+user.dir=C:\primo\violencia_dashboard
+os.name=Windows 11
+os.arch=amd64
+os.version=10.0
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

@@ -1,0 +1,358 @@
+---
+title: "Violencia contra las mujeres 2016"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    theme: 
+      version: 4
+      bootswatch: minty
+---
+<style>
+  p {
+  text-align: justify;
+  width: 60%;
+}
+</style>
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(haven)
+library(labelled)
+library(ggplot2)
+library(dplyr)
+library(flexdashboard)
+library(tidyverse)
+library(sparklyr)
+library(parquetize)
+# Install thematic and un-comment for themed static plots (i.e., ggplot2)
+# thematic::thematic_rmd()
+db_persona <- read_sav("EPCVCM_Persona.sav")
+db_casadas <- read_sav("EPCVCM_Casadas.sav")
+db_solteras <- read_sav("EPCVCM_Solteras.sav")
+db_separadas <- read_sav("EPCVCM_Separadas.sav")
+
+db_violencia_casadas<- db_casadas %>% mutate(violencia_social=labelled(as.integer(!(S1_01_1==4 & S1_01_2==4 & S1_01_3==4 & S1_01_4==4 & S1_01_5==4 &S1_01_6==4)), c(SI=1, NO=0)),
+                                   violencia_educativo=labelled(as.integer(!(S1_10==2 & S1_11_1==4 & S1_11_2==4 & S1_11_3==4 & S1_11_4==4 & S1_11_5==4 & S1_11_6==4)), c(SI=1, NO=0)),
+                                   violencia_laboral=labelled(as.integer(!(S1_20==2 & S1_21_1==4 & S1_21_2==4 & S1_21_3==4 & S1_21_4==4 & S1_21_5==4 & S1_21_6==4)), c(SI=1, NO=0)),
+                                   violencia_familiar=labelled(as.integer(!(S2_5_1>3 & S2_5_2>3 & S2_5_3>3 & S2_5_4>3 & S2_5_5>3 & S2_5_6>3 & S2_9_1>1 & S2_9_2>1 & S2_9_3>1)), c(SI=1, NO=0)),
+                                   violencia_pareja=labelled(as.integer(!(S3_10_01>3 & S3_10_02>3 & S3_10_03>3 & S3_10_04>3 & S3_10_05>3 & S3_10_06>3 & S3_10_07>3 & S3_10_08>3 & S3_10_08>3 & S3_10_08>3 & S3_10_09>3 & S3_10_10>3 & S3_10_11>3 & S3_10_12>3 & S3_10_13>3 & S3_10_14>3 & S3_10_15>3 & S3_10_16>3 & S3_10_17>3 & S3_10_18>3 & S3_10_19>3 & S3_10_20>3 & S3_10_21>3 & S3_10_22>3)), c(SI=1, NO=0))) %>% 
+  select(upm, depto, area, violencia_social, violencia_educativo, violencia_laboral, violencia_familiar, violencia_pareja) %>% 
+  mutate(violencia_educativo=ifelse(is.na(violencia_educativo), 0,violencia_educativo),violencia_laboral=ifelse(is.na(violencia_laboral), 0,violencia_laboral)) %>% mutate(violencia=labelled(as.integer(violencia_social==1 | violencia_educativo==1 | violencia_laboral==1 | violencia_pareja==1), c(SI=1, NO=0)))
+```
+Informe
+=======================================================================
+Column {.tabset .tabset-fade}
+-----------------------------------------------------------------------
+### Introduccion
+
+#### Introduccion
+<div>
+  <p >
+  La violencia es un tema que esta latente dentro de nuestro entorno, puede presentarse en distintos ambitos, tanto familiar,
+  laboral, social, educativo. Muchas veces tenemos la idea equivocada que la violencia puede solamente ser de manera fisica, sin embargo
+  esta puede tambien presentarse de manera psicologica, economica, sexual. Es por ello que no es extraño que se presenten distintos
+  trabajos de investigacion que aborden el tema de la violencia, desde distintos aspectos.
+  </p>
+  <p>
+  Este documento contiene informacion de la encuesta de violencia contra mujeres, presentada por el INE en el 2016, mismo que nos servira
+  para poder realizar un trabajo inicial en lo que respecta a datos estadisticos respecto al tema de la violencia contra las mujere.
+  se utilizo la mayor cantidad de aprendizaje de los cursos que incluyen esta maestria.
+  </p>
+</div>
+
+#### Objetivos
+
+se presenta a continuacion algunos de los objetivos de este trabajo:
+
+  - analizar y mostrar informacion relevante de la encuesta de violencia contra mujeres en Bolivia del 2016.
+  - prepocesar la informacion de manera que pueda mostrar datos entendibles para las personas.
+  - crear un dashboard resumiendo algunos de los datos obtenidos de la encuesta de violencia contra mujeres.
+  - aplicar los conocimientos obtenidos durante el curso de Big data.
+
+#### Motivacion
+
+<div>
+  <p>
+    El presente documento, tiene como fin responder a las situacion que involucran la violencia contra la mujer, al ser un tema tan importante, ni gobierno ni personas, pueden quedar indiferentes ante esta situacion. es por eso que se recopilo la encuesta realizada por el INE en 2016, como punto de partida para realizar el analisis, y asi poder responder a algunas de las preguntas en torno a esta tematica.
+  </p>
+  <p>
+    Si bien es cierto que puede no ser una encuesta actual, no deja de ser un interesante tema de estudio, por lo cual es interesante ver
+    como puede ampliarse este tema, con casos como por ejemplo, tomar una encuesta reciente, y compara los resultados de ambos, y asi poder
+    medir, si las medidas tomadas desde entonces, han funcionado o no. es por eso que este significa un interesante punto de partida.
+  </p>
+</div>
+
+
+### Marco Teorico
+<p>
+    es importante repasar algunos conceptos importantes dentro del analisis de datos que son importantes para el desarrollo de un proyecto de     bigdata, tambien ciertos temas rspecto a la violencia, que al ser de caracter social, estamos muy familiarizados con estos, por ello no ahondaremos mucho en algunos conceptos.
+</p>
+
+#### Metodologia KDD
+<p>
+  La metodologia KDD se considera una de las mas comunes en mundo de la ciencia de datos, por lo cual es importante conocer los pasos que incluyen dentro de esta metologia, los cuales se desarrollaran a continuacion.
+</p>
+<p>
+  Es cierto que esta metodologia tiene ciertas limitaciones, razon por la cual, se han hecho un sin fin de variaciones dentro del mismo. pero sera muy util dentro de este proyecto pequeno.
+</p>
+
+##### Seleccion
+<p>
+A través de esta fase se seleccionan las variables, o si se va a trabajar con muestras, los datos que deben ir a las mismas, su distribución, etc.
+</p>
+<p>
+ para nuestro caso, nos ayudara comprender las estructuras de las encuestas realizadas sobre mujeres en situacion de violencia. que principalmente estan divididos en, encuesta a mujeres Casada, mujeres separadas/ divorciadas o viudas, y mujeres solteras. estas encuestas tienen varias similitudes entre si. aun asi nos ayudan a delimitar en distintos grupos de estudio cada uno. 
+</p>
+
+##### Preprocesamiento
+<p>
+  En esta etapa los datos se limpian y se adecúan para poder ser consumidos por la herramienta de Análisis de datos.
+</p>
+<p>
+  nuestro caso de estudio, se limpiaran los datos, que en muy pocas ocasiones tienen datos perdidos, y en su gran mayoria estan completos,
+  sin embargo es bueno recalcar que no se usaran todas las variables por lo cual es bueno reducir el numero de variables que usaremos.
+</p>
+
+##### Transformacion
+
+<p>
+Aquí se utilizan métodos de reducción de la dimensión u otros métodos de transformación, para poder aplicar las técnicas de Data Mining que son elegidas.
+</p>
+<p>
+  como habiamos mencionado antes, es necesario reducir el numero de variables, deacuerdo a los datos que vamos a mostrar, en comparacion con las encuestas usadas en este trabajo, se eliminara algunas y otras se resumiran.
+</p>
+
+##### Transformacion
+
+<p>
+Aquí se intenta resolver las preguntas planteadas con las técnicas de Minería de datos escogidas, o se emprende la búsqueda de nuevos hallazgos, se intenta detectar patrones en los datos.
+</p>
+<p>
+  para nuestro caso, no estamos usando ningun algoritmo para prediccion, en todo caso analizaremos los datos recolectados, que igual manera usaran procesos estadisticos simples.
+</p>
+
+##### Interpretacion/ Evaluacion
+
+<p>
+A través de esta última etapa se extraen las conclusiones del estudio, y se evalúan los modelos de Minería de datos utilizados.
+</p>
+<p>
+  Nuestro caso de estudio nos permitira interpretar algunos de los datos obtenidos respecto al panorama de la violencia contra la mujer en 2016.
+</p>
+
+
+### Descripcion
+
+#### Descripcion de la base de datos
+
+<p>
+El dataset que usamos para este caso, es el generado por el INE, rescatado de la encuesta contra la violencia a mujeres del 2016, mismo es un recopilado de 3 casos encontrados:
+</p>
+
+- Encuesta a mujeres Casadas
+- Encuesta a mujeres Divorciadas o separadas y viudas
+- Encuesta a mujeres Solteras
+
+<p>
+  De estas 3 encuestas, resultan 4 distintos dataset, cada uno refleja las respuestas brindadas por cada persona que lleno la encuesta. en total se tienen 28.185 personas que formaron parte de esta encuesta. sin embargo, cada dataset esta divido deacuerdo a donde corresponde, ya que aunque, tienen mucha similitud, son encuestas distintas para cada grupo de encuestas. por ello el resultado final son 5 dataset, que se usaron para el analisis de esta encuesta.
+</p>
+
+- Base de datos de personas(54 variables )
+- Base de datos de viviendas(38 variables)
+- Base de datos de mujeres Casadas (710 variables)
+- Base de datos de mujeres solteras (717 variables)
+- base de datos de mujeres separadas o divorciadas, y viudas (710 variables)
+
+<p>
+Tanto los datasets como las encuestas forman parte del repositorio que forma este proyecto, y tambien pueden ser consultadas en la pagina del INE, que tambien se brindara en anexos.
+</p>
+
+### metodologia
+
+#### Indicadores y fichas de indicadores
+
+##### Descripcion de la encuesta
+
+las 3 encuestas cuentan con 5 grandes secciones
+
+- Ambito social
+- Ambito Familiar
+- Ambito Educativo
+- Ambito Laboral
+- Ambito de Pareja
+
+<p>
+ cada una de estas secciones, contiene preguntas sobre algun tipo de violencia sufrida, sea fisica, psicologica, economica, y sexual. de quien provino esa agresion, y si ha ocurrido en los ultimos 12 meses. el ambito de pareja varia un poco respecto a quien realizo la encuesta, sea casada, separada o viuda, o soltera. pero comparten similutudes medibles.
+</p>
+<p>
+Dado que cada encuesta, tiene distintas secciones no mencionadas aqui, y muy dificiles de describir uno a uno. por lo cual solo de da una breve descripcion de lo que contiene, a continuacion de describira algunos de los procesos usados para el analisis.
+</p>
+
+#### Tratamiento de la base de datos
+
+<p>
+  Dado que es una base de datos muy extensa a nivel de indicadores. se realizo los siguiente pasos para definir y resumir la base de datos a los elementos que necesitaremos para nuestro caso.
+</p>
+
+- definicion de variables de interes
+- algunos valores que se usaron fueron
+  - area(rural o urbana)
+  - estado Conyugal(soltera, casada, separada)
+- Para determinar si una persona ha sufrido algun tipo de violencia
+  - se determino deacuerdo a las preguntas que respondio de manera afirmativa
+
+<p>
+  si bien es cierto que se puede determinar que tipo de violencia sufrio, deacuerdo a las preguntas que respondio, no se hizo dicho analisis, debido a la complejidad de dicho caso, y la falta de conocimiento, por lo cual solo se determino si la persona sufrio algun tipo de violencia, y en que ambito sufrio dicho acto.
+</p>
+
+#### Visualizacion de Datos
+<p>
+  Para la visualizacion de los datos se hizo uso del software R, y sus paquetes de ggplot, y flexdashboard, que son utiles y de gran popularidad dentro de la comunidad. 
+</p>
+
+### Resultado y conclusiones
+
+#### Resultados obtenidos
+<p>
+Del analisis de los datos, de obtuvo que casi en su totalidad de la muestra habian sufrido algun tipo de violencia, por lo que se ignoro ese dato para los posteriores analisis.
+</p>
+<p>
+Es mas util, como se ve el dashboard, ver el tipo de ambitos donde ocurren estos hechos, siendo sorpresivamente, en el ambito educativo donde se suffre de mas violencia. tambien se realizo aquellos departamentos con mayor numero de casos de violencia. como es de esperarse, estos casos de presentan con mayor frecuencia en el eje troncal del pais. tambien otro de los datos interesantes es que es en el area rural donde se presentan estos casos.
+</p>
+
+#### Conclusiones
+<p>
+  El tema de violencia siempre sera un tema de amplio analisis. Con este pequeno proyecto se muestran solo algunos de los datos reflejados en la encuesta, pudiendo este ser mucho mas amplio e informativo. es interensante observar que dentro de los analisis, podemos observar en una gran mayoria de mujeres han sufrido algun tipo de violencia en algun punto de sus vidas.
+</p>
+<p>
+  Para realizar un analisis completo de este caso, es necesario siempre conocer, a mayor profundidad el sentido de cada pregunta dentro de la encuesta, y tambien un mayor tiempo para poder brindar una informacion mas amplia de la presentada en este trabajo.
+</p>
+
+#### Recomendaciones
+
+- Resultaria util, ampliar los datos aqui presentados, divididos por:
+  - tipo de violencia
+  - edades en las que se presenta
+  - grados de educacion de las agredidas
+- Un dato no presentado es si la persona ha sufrido violencia recientemente(en los ultimos 12 meses)
+- conocer el sentido de cada pregunta, ayuda a tener una base de datos mas amplia en conocimiento
+
+
+Datos Generales
+=======================================================================
+
+Row
+-----------------------------------------------------------------------
+
+### Proporcion de personas
+```{r}
+proporcion <- db_persona %>% group_by(sexo =as_factor(s2_02)) %>% summarise(count=n())
+
+ggplot(proporcion, aes(x="", y = count, fill=sexo)) +
+  geom_col() +
+  geom_text(aes(label=count), position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") + theme_void()
+```
+
+### Proporcion de mujeres en la encuesta
+```{r}
+db_total <- bind_rows(db_separadas %>% select(upm, area, depto, Est_Conyugal,estrato,factorm), db_casadas %>% select(upm, area, depto, Est_Conyugal,estrato,factorm), db_solteras %>% select(upm, area, depto, Est_Conyugal,estrato,factorm))
+
+count_db_total <- db_total %>% group_by(estado=as_factor(Est_Conyugal)) %>% summarise(count=n(), proporcion=round(n()/nrow(db_total), digits=3))
+ggplot(count_db_total, aes(x="", y = count, fill=estado)) +
+  geom_col() +
+  geom_text(aes(label=proporcion), position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  theme_void()
+  
+```
+
+Casadas
+=======================================================================
+
+Row
+-----------------------------------------------------------------------
+
+### Ambitos Sociales {data-height=500}
+
+```{r}
+
+sc <- spark_connect(master="local", version = "3.0")
+
+db_ambito <- db_violencia_casadas %>% summarize(social=sum(violencia_social), educativo=sum(violencia_educativo), laboral=sum(violencia_laboral), familiar=sum(violencia_laboral), pareja=sum(violencia_pareja))
+db_Ambito <- data.frame(ambito= c("Social", "Educativo", "Laboral", "Familiar", "Pareja"), count=c(db_ambito$social, db_ambito$educativo, db_ambito$laboral, db_ambito$familiar, db_ambito$pareja))
+
+cv_casada_spark <- copy_to(sc, db_Ambito)
+ggplot(data=cv_casada_spark) + geom_col(aes(x=ambito,y=count, fill=as.factor(count)), width=0.5)+ scale_fill_hue(c = 40) + theme(legend.position="none") + coord_flip()
+```
+
+### Mujeres que han sufrido violencia segun departamento {data-height=500}
+
+```{r}
+db_vc_dep <- db_violencia_casadas %>% filter(violencia==1) %>% group_by(departamento=as_factor(depto)) %>% summarise(count=n(), proporcion=n()/nrow(db_violencia_casadas))
+
+ggplot(data=db_vc_dep) + geom_col(aes(x=departamento,y=count, fill=as.factor(count)), width=0.5)+ scale_fill_hue(c = 40) + theme(legend.position="none") + coord_flip()
+
+```
+
+Row { .row-height }
+-----------------------------------------------------------------------
+
+### Mujeres que han sufrido violencia segun el area
+```{r}
+
+db_vc_area <- db_violencia_casadas %>% filter(violencia==1) %>% group_by(area=as_factor(area)) %>% summarise(count=n())
+
+ggplot(db_vc_area, aes(x="", y = count, fill=area)) +
+  geom_col() +
+  geom_text(aes(label=count), position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  theme_void()
+
+```
+
+### Mujeres que han sufrido violencia en la familia
+```{r}
+db_vc_familia <- db_violencia_casadas %>% group_by(familia=as_factor(violencia_familiar)) %>% summarise(count=n(), proporcion= paste(toString(round(n()/nrow(db_violencia_casadas), digits=3)*100), "%"))
+
+ggplot(db_vc_familia, aes(x="", y = count, fill=familia)) +
+  geom_col() +
+  geom_text(aes(label=proporcion), position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  theme_void()
+```
+
+Row { .row-height }
+-----------------------------------------------------------------------
+
+### Mujeres que han sufrido violencia en el trabajo
+```{r}
+db_vc_trabajo <- db_violencia_casadas %>% group_by(trabajo=as_factor(violencia_laboral)) %>% summarise(count=n(), proporcion= paste(toString(round(n()/nrow(db_violencia_casadas), digits=3)*100), "%"))
+
+
+ggplot(db_vc_trabajo, aes(x="", y = count, fill=trabajo)) +
+  geom_col() +
+  geom_text(aes(label=proporcion), position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  theme_void()
+```
+
+### Mujeres que han sufrido violencia en el pareja
+```{r}
+db_vc_pareja <- db_violencia_casadas %>% group_by(pareja=as_factor(violencia_pareja)) %>% summarise(count=n(), proporcion= paste(toString(round(n()/nrow(db_violencia_casadas), digits=3)*100), "%"))
+
+ggplot(db_vc_pareja, aes(x="", y = count, fill=pareja)) +
+  geom_col() +
+  geom_text(aes(label=proporcion), position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  theme_void()
+```
+
+### Ambito Educativo
+
+```{r}
+
+
+
+```
+
