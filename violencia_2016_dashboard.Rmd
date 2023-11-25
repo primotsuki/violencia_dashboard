@@ -38,6 +38,23 @@ db_violencia_casadas<- db_casadas %>% mutate(violencia_social=labelled(as.intege
                                    violencia_pareja=labelled(as.integer(!(S3_10_01>3 & S3_10_02>3 & S3_10_03>3 & S3_10_04>3 & S3_10_05>3 & S3_10_06>3 & S3_10_07>3 & S3_10_08>3 & S3_10_08>3 & S3_10_08>3 & S3_10_09>3 & S3_10_10>3 & S3_10_11>3 & S3_10_12>3 & S3_10_13>3 & S3_10_14>3 & S3_10_15>3 & S3_10_16>3 & S3_10_17>3 & S3_10_18>3 & S3_10_19>3 & S3_10_20>3 & S3_10_21>3 & S3_10_22>3)), c(SI=1, NO=0))) %>% 
   select(upm, depto, area, violencia_social, violencia_educativo, violencia_laboral, violencia_familiar, violencia_pareja) %>% 
   mutate(violencia_educativo=ifelse(is.na(violencia_educativo), 0,violencia_educativo),violencia_laboral=ifelse(is.na(violencia_laboral), 0,violencia_laboral)) %>% mutate(violencia=labelled(as.integer(violencia_social==1 | violencia_educativo==1 | violencia_laboral==1 | violencia_pareja==1), c(SI=1, NO=0)))
+
+db_violencia_solteras<- db_solteras %>% mutate(violencia_social=labelled(as.integer(!(S1_01_1==4 & S1_01_2==4 & S1_01_3==4 & S1_01_4==4 & S1_01_5==4 &S1_01_6==4)), c(SI=1, NO=0)),
+                                   violencia_educativo=labelled(as.integer(!(S1_10==2 & S1_11_1==4 & S1_11_2==4 & S1_11_3==4 & S1_11_4==4 & S1_11_5==4 & S1_11_6==4)), c(SI=1, NO=0)),
+                                   violencia_laboral=labelled(as.integer(!(S1_20==2 & S1_21_1==4 & S1_21_2==4 & S1_21_3==4 & S1_21_4==4 & S1_21_5==4 & S1_21_6==4)), c(SI=1, NO=0)),
+                                   violencia_familiar=labelled(as.integer(!(S2_5_1>3 & S2_5_2>3 & S2_5_3>3 & S2_5_4>3 & S2_5_5>3 & S2_5_6>3 & S2_9_1>1 & S2_9_2>1 & S2_9_3>1)), c(SI=1, NO=0)),
+                                   violencia_pareja=labelled(as.integer(!(S3_10_01>3 & S3_10_02>3 & S3_10_03>3 & S3_10_04>3 & S3_10_05>3 & S3_10_06>3 & S3_10_07>3 & S3_10_08>3 & S3_10_08>3 & S3_10_08>3 & S3_10_09>3 & S3_10_10>3 & S3_10_11>3 & S3_10_12>3 & S3_10_13>3 & S3_10_14>3 & S3_10_15>3 & S3_10_16>3 & S3_10_17>3 & S3_10_18>3 & S3_10_19>3 & S3_10_20>3 & S3_10_21>3 & S3_10_22>3)), c(SI=1, NO=0))) %>% 
+  select(upm, depto, area, violencia_social, violencia_educativo, violencia_laboral, violencia_familiar, violencia_pareja) %>% 
+  mutate(violencia_educativo=ifelse(is.na(violencia_educativo), 0,violencia_educativo),violencia_laboral=ifelse(is.na(violencia_laboral), 0,violencia_laboral), violencia_pareja= ifelse(is.na(violencia_pareja), 0, violencia_pareja)) %>% mutate(violencia=labelled(as.integer(violencia_social==1 | violencia_educativo==1 | violencia_laboral==1 | violencia_pareja==1), c(SI=1, NO=0)))
+
+db_violencia_separadas<- db_separadas %>% mutate(violencia_social=labelled(as.integer(!(S1_01_1==4 & S1_01_2==4 & S1_01_3==4 & S1_01_4==4 & S1_01_5==4 &S1_01_6==4)), c(SI=1, NO=0)),
+                                   violencia_educativo=labelled(as.integer(!(S1_10==2 & S1_11_1==4 & S1_11_2==4 & S1_11_3==4 & S1_11_4==4 & S1_11_5==4 & S1_11_6==4)), c(SI=1, NO=0)),
+                                   violencia_laboral=labelled(as.integer(!(S1_20==2 & S1_21_1==4 & S1_21_2==4 & S1_21_3==4 & S1_21_4==4 & S1_21_5==4 & S1_21_6==4)), c(SI=1, NO=0)),
+                                   violencia_familiar=labelled(as.integer(!(S2_5_1>3 & S2_5_2>3 & S2_5_3>3 & S2_5_4>3 & S2_5_5>3 & S2_5_6>3 & S2_9_1>1 & S2_9_2>1 & S2_9_3>1)), c(SI=1, NO=0)),
+                                   violencia_pareja=labelled(as.integer(!(S3_10_01>3 & S3_10_02>3 & S3_10_03>3 & S3_10_04>3 & S3_10_05>3 & S3_10_06>3 & S3_10_07>3 & S3_10_08>3 & S3_10_08>3 & S3_10_08>3 & S3_10_09>3 & S3_10_10>3 & S3_10_11>3 & S3_10_12>3 & S3_10_13>3 & S3_10_14>3 & S3_10_15>3 & S3_10_16>3 & S3_10_17>3 & S3_10_18>3 & S3_10_19>3 & S3_10_20>3 & S3_10_21>3 & S3_10_22>3)), c(SI=1, NO=0))) %>% 
+  select(upm, depto, area, violencia_social, violencia_educativo, violencia_laboral, violencia_familiar, violencia_pareja) %>% 
+  mutate(violencia_educativo=ifelse(is.na(violencia_educativo), 0,violencia_educativo),violencia_laboral=ifelse(is.na(violencia_laboral), 0,violencia_laboral)) %>% mutate(violencia=labelled(as.integer(violencia_social==1 | violencia_educativo==1 | violencia_laboral==1 | violencia_pareja==1), c(SI=1, NO=0)))
+
 ```
 Informe
 =======================================================================
@@ -267,6 +284,87 @@ ggplot(count_db_total, aes(x="", y = count, fill=estado)) +
   
 ```
 
+Solteras
+=======================================================================
+
+Row
+-----------------------------------------------------------------------
+
+### Ambitos Sociales {data-height=500}
+
+```{r}
+sc <- spark_connect(master="local", version = "3.0")
+
+db_ambito_solteras <- db_violencia_solteras %>% summarize(social=sum(violencia_social), educativo=sum(violencia_educativo), laboral=sum(violencia_laboral), familiar=sum(violencia_laboral), pareja=sum(violencia_pareja))
+
+db_ambito_solteras <- data.frame(ambito= c("Social", "Educativo", "Laboral", "Familiar", "Pareja"), count=c(db_ambito_solteras$social, db_ambito_solteras$educativo, db_ambito_solteras$laboral, db_ambito_solteras$familiar, db_ambito_solteras$pareja))
+
+cv_soltera_spark <- copy_to(sc, db_ambito_solteras)
+ggplot(data=cv_soltera_spark) + geom_col(aes(x=ambito,y=count, fill=as.factor(count)), width=0.5)+ scale_fill_hue(c = 40) + theme(legend.position="none") + coord_flip()
+```
+
+### Mujeres que han sufrido violencia segun departamento {data-height=500}
+
+```{r}
+db_vs_dep <- db_violencia_solteras %>% filter(violencia==1) %>% group_by(departamento=as_factor(depto)) %>% summarise(count=n(), proporcion=n()/nrow(db_violencia_solteras))
+
+ggplot(data=db_vs_dep) + geom_col(aes(x=departamento,y=count, fill=as.factor(count)), width=0.5)+ scale_fill_hue(c = 40) + theme(legend.position="none") + coord_flip()
+
+```
+
+Row { .row-height }
+-----------------------------------------------------------------------
+
+### Mujeres que han sufrido violencia segun el area
+```{r}
+
+db_vs_area <- db_violencia_solteras %>% filter(violencia==1) %>% group_by(area=as_factor(area)) %>% summarise(count=n())
+
+ggplot(db_vs_area, aes(x="", y = count, fill=area)) +
+  geom_col() +
+  geom_text(aes(label=count), position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  theme_void()
+
+```
+
+### Mujeres que han sufrido violencia en la familia
+```{r}
+db_vs_familia <- db_violencia_solteras %>% group_by(familia=as_factor(violencia_familiar)) %>% summarise(count=n(), proporcion= paste(toString(round(n()/nrow(db_violencia_solteras), digits=3)*100), "%"))
+
+ggplot(db_vs_familia, aes(x="", y = count, fill=familia)) +
+  geom_col() +
+  geom_text(aes(label=proporcion), position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  theme_void()
+```
+
+Row { .row-height }
+-----------------------------------------------------------------------
+
+### Mujeres que han sufrido violencia en el trabajo
+```{r}
+db_vs_trabajo <- db_violencia_solteras %>% group_by(trabajo=as_factor(violencia_laboral)) %>% summarise(count=n(), proporcion= paste(toString(round(n()/nrow(db_violencia_solteras), digits=3)*100), "%"))
+
+
+ggplot(db_vs_trabajo, aes(x="", y = count, fill=trabajo)) +
+  geom_col() +
+  geom_text(aes(label=proporcion), position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  theme_void()
+```
+
+### Mujeres que han sufrido violencia en el pareja
+```{r}
+db_vs_pareja <- db_violencia_solteras %>% group_by(pareja=as_factor(violencia_pareja)) %>% summarise(count=n(), proporcion= paste(toString(round(n()/nrow(db_violencia_solteras), digits=3)*100), "%"))
+
+ggplot(db_vs_pareja, aes(x="", y = count, fill=pareja)) +
+  geom_col() +
+  geom_text(aes(label=proporcion), position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  theme_void()
+```
+
 Casadas
 =======================================================================
 
@@ -276,8 +374,6 @@ Row
 ### Ambitos Sociales {data-height=500}
 
 ```{r}
-
-sc <- spark_connect(master="local", version = "3.0")
 
 db_ambito <- db_violencia_casadas %>% summarize(social=sum(violencia_social), educativo=sum(violencia_educativo), laboral=sum(violencia_laboral), familiar=sum(violencia_laboral), pareja=sum(violencia_pareja))
 db_Ambito <- data.frame(ambito= c("Social", "Educativo", "Laboral", "Familiar", "Pareja"), count=c(db_ambito$social, db_ambito$educativo, db_ambito$laboral, db_ambito$familiar, db_ambito$pareja))
@@ -348,11 +444,81 @@ ggplot(db_vc_pareja, aes(x="", y = count, fill=pareja)) +
   theme_void()
 ```
 
-### Ambito Educativo
+Separadas
+=======================================================================
+
+Row
+-----------------------------------------------------------------------
+
+### Ambitos Sociales {data-height=500}
 
 ```{r}
 
+db_ambito_sep <- db_violencia_separadas %>% summarize(social=sum(violencia_social), educativo=sum(violencia_educativo), laboral=sum(violencia_laboral), familiar=sum(violencia_laboral), pareja=sum(violencia_pareja))
+db_ambito_sep <- data.frame(ambito= c("Social", "Educativo", "Laboral", "Familiar", "Pareja"), count=c(db_ambito_sep$social, db_ambito_sep$educativo, db_ambito_sep$laboral, db_ambito_sep$familiar, db_ambito_sep$pareja))
 
+cv_sep_spark <- copy_to(sc, db_ambito_sep)
+ggplot(data=cv_sep_spark) + geom_col(aes(x=ambito,y=count, fill=as.factor(count)), width=0.5)+ scale_fill_hue(c = 40) + theme(legend.position="none") + coord_flip()
+```
+
+### Mujeres que han sufrido violencia segun departamento {data-height=500}
+
+```{r}
+db_vsep_dep <- db_violencia_separadas %>% filter(violencia==1) %>% group_by(departamento=as_factor(depto)) %>% summarise(count=n(), proporcion=n()/nrow(db_violencia_separadas))
+
+ggplot(data=db_vsep_dep) + geom_col(aes(x=departamento,y=count, fill=as.factor(count)), width=0.5)+ scale_fill_hue(c = 40) + theme(legend.position="none") + coord_flip()
 
 ```
 
+Row { .row-height }
+-----------------------------------------------------------------------
+
+### Mujeres que han sufrido violencia segun el area
+```{r}
+
+db_vsep_area <- db_violencia_separadas %>% filter(violencia==1) %>% group_by(area=as_factor(area)) %>% summarise(count=n())
+
+ggplot(db_vsep_area, aes(x="", y = count, fill=area)) +
+  geom_col() +
+  geom_text(aes(label=count), position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  theme_void()
+
+```
+
+### Mujeres que han sufrido violencia en la familia
+```{r}
+db_vsep_familia <- db_violencia_separadas %>% group_by(familia=as_factor(violencia_familiar)) %>% summarise(count=n(), proporcion= paste(toString(round(n()/nrow(db_violencia_separadas), digits=3)*100), "%"))
+
+ggplot(db_vsep_familia, aes(x="", y = count, fill=familia)) +
+  geom_col() +
+  geom_text(aes(label=proporcion), position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  theme_void()
+```
+
+Row { .row-height }
+-----------------------------------------------------------------------
+
+### Mujeres que han sufrido violencia en el trabajo
+```{r}
+db_vsep_trabajo <- db_violencia_separadas %>% group_by(trabajo=as_factor(violencia_laboral)) %>% summarise(count=n(), proporcion= paste(toString(round(n()/nrow(db_violencia_separadas), digits=3)*100), "%"))
+
+
+ggplot(db_vsep_trabajo, aes(x="", y = count, fill=trabajo)) +
+  geom_col() +
+  geom_text(aes(label=proporcion), position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  theme_void()
+```
+
+### Mujeres que han sufrido violencia en el pareja
+```{r}
+db_vsep_pareja <- db_violencia_separadas %>% group_by(pareja=as_factor(violencia_pareja)) %>% summarise(count=n(), proporcion= paste(toString(round(n()/nrow(db_violencia_separadas), digits=3)*100), "%"))
+
+ggplot(db_vsep_pareja, aes(x="", y = count, fill=pareja)) +
+  geom_col() +
+  geom_text(aes(label=proporcion), position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  theme_void()
+```
